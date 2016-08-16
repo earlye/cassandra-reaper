@@ -31,158 +31,178 @@ import io.dropwizard.db.DataSourceFactory;
 
 public class ReaperApplicationConfiguration extends Configuration {
 
-  @JsonProperty
-  @NotNull
-  private Integer segmentCount;
+	private static final String DEFAULT_MAX_PENDING_COMPACTIONS = "20";
 
-  @JsonProperty
-  @NotNull
-  private RepairParallelism repairParallelism;
+	@JsonProperty
+	@NotNull
+	private Integer segmentCount;
 
-  @JsonProperty
-  @NotNull
-  @DecimalMin(value = "0", inclusive = false)
-  @Max(1)
-  private Double repairIntensity;
+	@JsonProperty
+	@NotNull
+	private RepairParallelism repairParallelism;
 
-  @JsonProperty
-  @NotNull
-  @DefaultValue("7")
-  private Integer scheduleDaysBetween;
+	@JsonProperty
+	@NotNull
+	@DecimalMin(value = "0", inclusive = false)
+	@Max(1)
+	private Double repairIntensity;
 
-  @JsonProperty
-  @NotNull
-  private Integer repairRunThreadCount;
+	@JsonProperty
+	@NotNull
+	@DefaultValue("7")
+	private Integer scheduleDaysBetween;
 
-  @JsonProperty
-  @NotNull
-  private Integer hangingRepairTimeoutMins;
+	@JsonProperty
+	@NotNull
+	private Integer repairRunThreadCount;
 
-  @NotEmpty
-  private String storageType;
+	@JsonProperty
+	@NotNull
+	private Integer hangingRepairTimeoutMins;
 
-  private String enableCrossOrigin;
+	@JsonProperty
+	@DefaultValue(DEFAULT_MAX_PENDING_COMPACTIONS)
+	@DecimalMin(value = "1", inclusive = true)
+	private Integer maxPendingCompactions;
 
-  @Valid
-  @NotNull
-  @JsonProperty
-  private DataSourceFactory database = new DataSourceFactory();
+	@NotEmpty
+	private String storageType;
 
-  @JsonProperty
-  private Map<String, Integer> jmxPorts;
+	private String enableCrossOrigin;
 
-  @JsonProperty
-  private JmxCredentials jmxAuth;
+	@Valid
+	@NotNull
+	@JsonProperty
+	private DataSourceFactory database = new DataSourceFactory();
 
+	@JsonProperty
+	private Map<String, Integer> jmxPorts;
 
-  public int getSegmentCount() {
-    return segmentCount;
-  }
+	@JsonProperty
+	private JmxCredentials jmxAuth;
 
-  public void setSegmentCount(int segmentCount) {
-    this.segmentCount = segmentCount;
-  }
+	public int getSegmentCount() {
+		return segmentCount;
+	}
 
-  public RepairParallelism getRepairParallelism() {
-    return repairParallelism;
-  }
+	public void setSegmentCount(int segmentCount) {
+		this.segmentCount = segmentCount;
+	}
 
-  public void setRepairParallelism(RepairParallelism repairParallelism) {
-    this.repairParallelism = repairParallelism;
-  }
+	public RepairParallelism getRepairParallelism() {
+		return repairParallelism;
+	}
 
-  public double getRepairIntensity() {
-    return repairIntensity;
-  }
+	public void setRepairParallelism(RepairParallelism repairParallelism) {
+		this.repairParallelism = repairParallelism;
+	}
 
-  public void setRepairIntensity(double repairIntensity) {
-    this.repairIntensity = repairIntensity;
-  }
+	public double getRepairIntensity() {
+		return repairIntensity;
+	}
 
-  public Integer getScheduleDaysBetween() {
-    return scheduleDaysBetween;
-  }
+	public void setRepairIntensity(double repairIntensity) {
+		this.repairIntensity = repairIntensity;
+	}
 
-  public void setScheduleDaysBetween(int scheduleDaysBetween) {
-    this.scheduleDaysBetween = scheduleDaysBetween;
-  }
+	public Integer getScheduleDaysBetween() {
+		return scheduleDaysBetween;
+	}
 
-  public int getRepairRunThreadCount() {
-    return repairRunThreadCount;
-  }
+	public void setScheduleDaysBetween(int scheduleDaysBetween) {
+		this.scheduleDaysBetween = scheduleDaysBetween;
+	}
 
-  public void setRepairRunThreadCount(int repairRunThreadCount) {
-    this.repairRunThreadCount = repairRunThreadCount;
-  }
+	public int getRepairRunThreadCount() {
+		return repairRunThreadCount;
+	}
 
-  public String getStorageType() {
-    return storageType;
-  }
+	public void setRepairRunThreadCount(int repairRunThreadCount) {
+		this.repairRunThreadCount = repairRunThreadCount;
+	}
 
-  public void setEnableCrossOrigin(String enableCrossOrigin) {
-    this.enableCrossOrigin = enableCrossOrigin;
-  }
+	public String getStorageType() {
+		return storageType;
+	}
 
-  public String getEnableCrossOrigin() {
-    return this.enableCrossOrigin;
-  }
+	public void setEnableCrossOrigin(String enableCrossOrigin) {
+		this.enableCrossOrigin = enableCrossOrigin;
+	}
 
-  public boolean isEnableCrossOrigin() {
-    return this.enableCrossOrigin != null && this.enableCrossOrigin.equalsIgnoreCase("true");
-  }
+	public String getEnableCrossOrigin() {
+		return this.enableCrossOrigin;
+	}
 
-  public void setStorageType(String storageType) {
-    this.storageType = storageType;
-  }
+	public boolean isEnableCrossOrigin() {
+		return this.enableCrossOrigin != null && this.enableCrossOrigin.equalsIgnoreCase("true");
+	}
 
-  public DataSourceFactory getDataSourceFactory() {
-    return database;
-  }
+	public void setStorageType(String storageType) {
+		this.storageType = storageType;
+	}
 
-  public void setDataSourceFactory(DataSourceFactory database) {
-    this.database = database;
-  }
+	public DataSourceFactory getDataSourceFactory() {
+		return database;
+	}
 
-  public int getHangingRepairTimeoutMins() {
-    return hangingRepairTimeoutMins;
-  }
+	public void setDataSourceFactory(DataSourceFactory database) {
+		this.database = database;
+	}
 
-  @JsonProperty
-  public void setHangingRepairTimeoutMins(int hangingRepairTimeoutMins) {
-    this.hangingRepairTimeoutMins = hangingRepairTimeoutMins;
-  }
+	public int getHangingRepairTimeoutMins() {
+		return hangingRepairTimeoutMins;
+	}
 
-  public Map<String, Integer> getJmxPorts() {
-    return jmxPorts;
-  }
+	@JsonProperty
+	public void setHangingRepairTimeoutMins(int hangingRepairTimeoutMins) {
+		this.hangingRepairTimeoutMins = hangingRepairTimeoutMins;
+	}
 
-  public void setJmxPorts(Map<String, Integer> jmxPorts) {
-    this.jmxPorts = jmxPorts;
-  }
+	public Map<String, Integer> getJmxPorts() {
+		return jmxPorts;
+	}
 
-  public JmxCredentials getJmxAuth() {
-    return jmxAuth;
-  }
+	public void setJmxPorts(Map<String, Integer> jmxPorts) {
+		this.jmxPorts = jmxPorts;
+	}
 
-  public void setJmxAuth(JmxCredentials jmxAuth) {
-    this.jmxAuth = jmxAuth;
-  }
+	public JmxCredentials getJmxAuth() {
+		return jmxAuth;
+	}
 
-  public static class JmxCredentials {
+	public void setJmxAuth(JmxCredentials jmxAuth) {
+		this.jmxAuth = jmxAuth;
+	}
 
-    @JsonProperty
-    private String username;
-    @JsonProperty
-    private String password;
+	public static class JmxCredentials {
 
-    public String getUsername() {
-      return username;
-    }
+		@JsonProperty
+		private String username;
+		@JsonProperty
+		private String password;
 
-    public String getPassword() {
-      return password;
-    }
+		public String getUsername() {
+			return username;
+		}
 
-  }
+		public String getPassword() {
+			return password;
+		}
 
+		public void setPassword(String value) {
+			password = value;
+		}
+
+	}
+
+	public Integer getMaxPendingCompactions() {
+		if (null == maxPendingCompactions) {
+			return Integer.valueOf(DEFAULT_MAX_PENDING_COMPACTIONS);
+		}
+		return maxPendingCompactions;
+	}
+
+	public void setMaxPendingCompactions(Integer maxPendingCompactions) {
+		this.maxPendingCompactions = maxPendingCompactions;
+	}
 }

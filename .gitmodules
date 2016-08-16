@@ -1,0 +1,3 @@
+[submodule "cassandra-reaper-ui"]
+	path = cassandra-reaper-ui
+	url = git@github.com:earlye/cassandra-reaper-ui.git

@@ -135,6 +135,15 @@ The Reaper service specific configuration values are:
 
   Optional setting which you can set to be "true", if you wish to enable the CORS headers
   for running an external GUI application, like [this project](https://github.com/spodkowinski/cassandra-reaper-ui).
+  
+* maxPendingCompactions
+
+  This value throttles the repair process based on reading the number of compactions pending.
+  The default is 20.  This may be set temporarily by issuing a curl command like the following:
+  
+  ```bash
+  curl -X PUT -d '{"value":40}' -H 'Content-Type: application/json' http://localhost:8080/configuration/maxPendingCompactions
+  ``` 
 
 Notice that in the *server* section of the configuration, if you want to bind the service
 to all interfaces, use value "0.0.0.0", or just leave the *bindHost* line away completely.
@@ -181,6 +190,23 @@ Source code for all the REST resources can be found from package com.spotify.rea
   * Delete a cluster object identified by the given "cluster_name" path parameter.
     Cluster will get deleted only if there are no schedules or repair runs for the cluster,
     or the request will fail. Delete repair runs and schedules first before calling this.
+
+## Configuration Resource
+
+* GET	/configuration
+  * No parameters
+  * Returns the configuration object, with passwords removed
+  
+* GET   /configuration/maxPendingCompactions
+  * No parameters
+  * Returns a tuple with the value of the maxPendingCompactions setting.
+
+* GET   /configuration/maxPendingCompactions
+  * Expected data: a tuple with the new value of the maxPendingCompactions setting, e.g.:
+  
+```json
+{ "value" : 20 }
+```
 
 ## Repair Run Resource
 

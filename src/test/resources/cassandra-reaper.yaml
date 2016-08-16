@@ -18,7 +18,7 @@ hangingRepairTimeoutMins: 30
 scheduleDaysBetween: 7
 
 # storageType is either "database" or "memory"
-storageType: memory
+storageType: database
 
 # Enable HTTP headers to that GUI can work
 # GUI lives at https://github.com/spodkowinski/cassandra-reaper-ui
@@ -65,13 +65,13 @@ database:
   driverClass: org.postgresql.Driver
 
   # the username
-  user: pg-user
+  user: reaper
 
   # the password
-  password: iAMs00perSecrEET
+  password: grimmm
 
   # the JDBC URL
-  url: jdbc:postgresql://db.example.com/db-prod
+  url: jdbc:postgresql://10.84.83.173/reaper_db
 
   # any properties specific to your JDBC driver:
   properties:

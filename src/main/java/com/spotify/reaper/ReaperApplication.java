@@ -13,11 +13,25 @@
  */
 package com.spotify.reaper;
 
-import com.google.common.annotations.VisibleForTesting;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
+
+import org.apache.cassandra.repair.RepairParallelism;
+import org.eclipse.jetty.servlets.CrossOriginFilter;
+import org.joda.time.DateTimeZone;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.annotations.VisibleForTesting;
 import com.spotify.reaper.ReaperApplicationConfiguration.JmxCredentials;
 import com.spotify.reaper.cassandra.JmxConnectionFactory;
 import com.spotify.reaper.resources.ClusterResource;
+import com.spotify.reaper.resources.ConfigurationResource;
 import com.spotify.reaper.resources.PingResource;
 import com.spotify.reaper.resources.ReaperHealthCheck;
 import com.spotify.reaper.resources.RepairRunResource;
@@ -27,28 +41,14 @@ import com.spotify.reaper.service.SchedulingManager;
 import com.spotify.reaper.storage.IStorage;
 import com.spotify.reaper.storage.MemoryStorage;
 import com.spotify.reaper.storage.PostgresStorage;
-
-import org.apache.cassandra.repair.RepairParallelism;
-import org.eclipse.jetty.servlets.CrossOriginFilter;
-import org.joda.time.DateTimeZone;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import sun.misc.Signal;
-import sun.misc.SignalHandler;
-
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import javax.servlet.DispatcherType;
-import javax.servlet.FilterRegistration;
+import com.spotify.reaper.storage.postgresql.CommandSetupSchema;
 
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import sun.misc.Signal;
+import sun.misc.SignalHandler;
 
 public class ReaperApplication extends Application<ReaperApplicationConfiguration> {
 
@@ -87,6 +87,7 @@ public class ReaperApplication extends Application<ReaperApplicationConfiguratio
   @Override
   public void initialize(Bootstrap<ReaperApplicationConfiguration> bootstrap) {
     bootstrap.addBundle(new AssetsBundle("/assets/", "/webui", "index.html"));
+    bootstrap.addCommand(new CommandSetupSchema());
   }
 
   @Override
@@ -97,6 +98,7 @@ public class ReaperApplication extends Application<ReaperApplicationConfiguratio
 
     checkConfiguration(config);
     context.config = config;
+    context.objectMapper = environment.getObjectMapper();
 
     addSignalHandlers(); // SIGHUP, etc.
 
@@ -154,6 +156,9 @@ public class ReaperApplication extends Application<ReaperApplicationConfiguratio
 
     final ClusterResource addClusterResource = new ClusterResource(context);
     environment.jersey().register(addClusterResource);
+    
+    final ConfigurationResource addConfigurationResource = new ConfigurationResource(context);
+    environment.jersey().register(addConfigurationResource);
 
     final RepairRunResource addRepairRunResource = new RepairRunResource(context);
     environment.jersey().register(addRepairRunResource);
@@ -183,7 +188,7 @@ public class ReaperApplication extends Application<ReaperApplicationConfiguratio
     return storage;
   }
 
-  private void checkConfiguration(ReaperApplicationConfiguration config) {
+  public static void checkConfiguration(ReaperApplicationConfiguration config) {
     LOG.debug("repairIntensity: " + config.getRepairIntensity());
     LOG.debug("repairRunThreadCount: " + config.getRepairRunThreadCount());
     LOG.debug("segmentCount: " + config.getSegmentCount());

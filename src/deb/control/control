@@ -1,0 +1,8 @@
+Package: cassandra-reaper
+Version: 2.4
+Section: misc
+Priority: low
+Architecture: all
+Description: Cassandra Reaper, Packaged By Earlye
+Maintainer: earlye+reaper@gmail.com
+Depends: default-jre | java6-runtime

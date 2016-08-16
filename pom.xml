@@ -151,6 +151,95 @@
                     </execution>
                 </executions>
             </plugin>
-        </plugins>
+
+
+            <plugin>
+	      <artifactId>jdeb</artifactId>
+	      <groupId>org.vafer</groupId>
+	      <version>1.5</version>
+	      <executions>
+		<execution>
+		  <phase>package</phase>
+		  <goals>
+		    <goal>jdeb</goal>
+		  </goals>
+		  <configuration>
+		    <verbose>true</verbose>
+		    <snapshotExpand>true</snapshotExpand>
+		    <!-- expand "SNAPSHOT" to what is in the "USER" env variable -->
+		    <snapshotEnv>USER</snapshotEnv>
+		    <verbose>true</verbose>
+		    <controlDir>${basedir}/src/deb/control</controlDir>
+		    <dataSet>
+
+		      <data>
+			<src>${project.build.directory}/${project.build.finalName}.jar</src>
+			<type>file</type>
+			<mapper>
+			  <type>perm</type>
+			  <prefix>/opt/cassandra-reaper</prefix>
+			  <user>cassreaper</user>
+			  <group>cassreaper</group>
+			</mapper>
+		      </data>
+
+		      <data>
+			<src>${basedir}/bin/cassandra-reaper</src>
+			<type>file</type>
+			<mapper>
+			  <type>perm</type>
+			  <filemode>0755</filemode>
+			  <prefix>/opt/cassandra-reaper</prefix>
+			  <user>cassreaper</user>
+			  <group>cassreaper</group>
+			</mapper>
+		      </data>
+
+		      <data>
+			<src>${basedir}/src/test/resources/cassandra-reaper.yaml</src>
+			<type>file</type>
+			<mapper>
+			  <type>perm</type>
+			  <prefix>/etc/cassandra-reaper</prefix>
+			  <user>cassreaper</user>
+			  <group>cassreaper</group>
+			</mapper>
+		      </data>
+
+		      <data>
+			<src>${basedir}/src/deb/init.d/cassandra-reaper</src>
+			<type>file</type>
+			<mapper>
+			  <type>perm</type>
+			  <filemode>0755</filemode>
+			  <prefix>/etc/init.d</prefix>
+			  <user>root</user>
+			  <group>root</group>
+			</mapper>
+		      </data>
+		      
+
+		      <data>
+			<type>template</type>
+			<paths>
+			  <path>etc/${project.artifactId}</path>
+			  <path>var/lib/${project.artifactId}</path>
+			  <path>var/log/${project.artifactId}</path>
+			  <path>var/run/${project.artifactId}</path>
+			</paths>
+			<mapper>
+			  <type>perm</type>
+			  <user>loader</user>
+			  <group>loader</group>
+			</mapper>
+		      </data>
+
+		    </dataSet>
+		  </configuration>
+		</execution>
+	      </executions>
+	    </plugin>
+	    
+	</plugins>
     </build>
 </project>

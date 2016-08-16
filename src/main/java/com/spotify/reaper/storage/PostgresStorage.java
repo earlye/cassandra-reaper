@@ -69,6 +69,10 @@ public class PostgresStorage implements IStorage {
       throw new ReaperException(ex);
     }
   }
+  
+  public Handle getHandle() {
+	  return jdbi.open();
+  }
 
   private static IStoragePostgreSQL getPostgresStorage(Handle h) {
     h.registerArgumentFactory(new LongCollectionSQLTypeArgumentFactory());

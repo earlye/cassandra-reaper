@@ -13,10 +13,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-CLASS_PATH="/usr/share/cassandra-reaper/*"
+CLASS_PATH="/opt/cassandra-reaper/*.jar"
 
 if [ $# -eq 0 ]; then
-    CONFIG_PATH="/etc/spotify/cassandra-reaper.yaml"
+    CONFIG_PATH="/etc/cassandra-reaper/cassandra-reaper.yaml"
 else
     CONFIG_PATH="$@"
 fi
