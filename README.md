@@ -201,7 +201,7 @@ Source code for all the REST resources can be found from package com.spotify.rea
   * No parameters
   * Returns a tuple with the value of the maxPendingCompactions setting.
 
-* GET   /configuration/maxPendingCompactions
+* PUT   /configuration/maxPendingCompactions
   * Expected data: a tuple with the new value of the maxPendingCompactions setting, e.g.:
   
 ```json
