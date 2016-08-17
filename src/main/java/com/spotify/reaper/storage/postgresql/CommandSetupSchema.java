@@ -1,9 +1,11 @@
 package com.spotify.reaper.storage.postgresql;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.naming.directory.InvalidAttributesException;
@@ -24,8 +26,22 @@ import net.sourceforge.argparse4j.inf.Namespace;
 
 public class CommandSetupSchema extends ConfiguredCommand<ReaperApplicationConfiguration>{
 
-	private AppContext context;
+	//private AppContext context;
 
+	static public String getReaperDbSql() throws IOException {
+		
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		InputStream is = classLoader.getResourceAsStream("db/reaper_db.sql");
+		
+		ByteArrayOutputStream result = new ByteArrayOutputStream();
+		byte[] buffer = new byte[1024];
+		int length;
+		while ((length = is.read(buffer)) != -1) {
+		    result.write(buffer, 0, length);
+		}
+		return result.toString("UTF-8");
+	}
+	
 	
 	public CommandSetupSchema() {
 		super("schema", "Build database schema");
@@ -55,14 +71,17 @@ public class CommandSetupSchema extends ConfiguredCommand<ReaperApplicationConfi
 			throw new IOException("Could not connect to Postgres");
 		}
 		
-		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		InputStream is = classLoader.getResourceAsStream("db/reaper_db.sql");
-		String reaperDbSql = new BufferedReader(new InputStreamReader(is)).lines().collect(Collectors.joining("\n"));
-		log.debug(reaperDbSql);
+		String reaperDbSql = getReaperDbSql();
+		//log.debug(reaperDbSql);
 		
-		Handle handle = storage.getHandle();
-		handle.execute(reaperDbSql);
-		handle.close();
+		String commands[] = reaperDbSql.split(";");
+		
+		for (String command:commands) {
+			log.info("Executing:" + command);
+			Handle handle = storage.getHandle();
+			handle.execute(command);
+			handle.close();
+		}
 	}
 
 }

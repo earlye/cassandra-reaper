@@ -1,2 +1,2 @@
 #!/bin/sh
-useradd -r cassreaper
+id -u cassreaper &>/dev/null || useradd -r cassreaper
