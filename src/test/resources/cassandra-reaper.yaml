@@ -71,7 +71,7 @@ database:
   password: grimmm
 
   # the JDBC URL
-  url: jdbc:postgresql://10.84.83.173/reaper_db
+  url: jdbc:postgresql://localhost/reaper_db
 
   # any properties specific to your JDBC driver:
   properties:
