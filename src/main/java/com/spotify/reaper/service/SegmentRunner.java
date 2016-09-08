@@ -255,9 +255,10 @@ public final class SegmentRunner implements RepairStatusHandler, Runnable {
                 + " Run id '{}'", hostName, segment.getRunId());
       try (JmxProxy hostProxy = context.jmxConnectionFactory.connect(hostName)) {
         int pendingCompactions = hostProxy.getPendingCompactions();
-        if (pendingCompactions > context.config.getMaxPendingCompactions()) {
+        Integer maxPendingCompactions = context != null ? context.config != null ? context.config.getMaxPendingCompactions() : 20 : 20;
+        if (pendingCompactions > maxPendingCompactions) {
           LOG.info("SegmentRunner declined to repair segment {} because of too many pending "
-                   + "compactions (> {}) on host \"{}\"", segmentId, context.config.getMaxPendingCompactions(),
+                   + "compactions (> {}) on host \"{}\"", segmentId, maxPendingCompactions,
               hostProxy.getHost());
           String msg = String.format("Postponed due to pending compactions (%d)",
               pendingCompactions);

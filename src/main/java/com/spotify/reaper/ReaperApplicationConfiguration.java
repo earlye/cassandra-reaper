@@ -63,7 +63,7 @@ public class ReaperApplicationConfiguration extends Configuration {
 	@JsonProperty
 	@DefaultValue(DEFAULT_MAX_PENDING_COMPACTIONS)
 	@DecimalMin(value = "1", inclusive = true)
-	private Integer maxPendingCompactions;
+	private Integer maxPendingCompactions = 20;
 
 	@NotEmpty
 	private String storageType;

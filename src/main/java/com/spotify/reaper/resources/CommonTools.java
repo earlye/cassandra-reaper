@@ -61,7 +61,7 @@ public class CommonTools {
     checkNotNull(tokenSegments, "failed generating repair segments");
 
     // the next step is to prepare a repair run object
-    RepairRun repairRun = storeNewRepairRun(context, cluster, repairUnit, cause, owner, segments,
+    RepairRun repairRun = storeNewRepairRun(context, cluster, repairUnit, cause, owner, tokenSegments.size(),
                                             repairParallelism, intensity);
     checkNotNull(repairRun, "failed preparing repair run");
 
